@@ -14,6 +14,7 @@ GraphQL is a query language and runtime for APIs that enables clients to request
 ### 2. Resolvers
 
 - Functions that resolve data for different parts of the GraphQL schema.
+- Resolver is Provide the Data, and that Data is Co-related the The Schema or Type that we're created.
 
 ### 3. Queries and Mutations
 
@@ -24,25 +25,7 @@ GraphQL is a query language and runtime for APIs that enables clients to request
 
 - An interactive tool for testing and debugging GraphQL APIs.
 
-## Running a Simple GraphQL Example:
+### 5. Packages are used so Far
 
-### Prerequisites:
-
-- Node.js installed
-- Basic knowledge of GraphQL
-
-### Steps:
-
-1. **Set up a GraphQL Server:**
-
-```bash
-# Create a new directory
-mkdir graphql-example
-cd graphql-example
-
-# Initialize npm
-npm init -y
-
-# Install necessary packages
-npm install graphql express express-graphql
-```
+- I used the `@apollo/server`, `graphql`
+- where `apollo/server` basically used to run the server
