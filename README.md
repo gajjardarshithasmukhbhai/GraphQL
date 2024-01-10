@@ -21,11 +21,15 @@ GraphQL is a query language and runtime for APIs that enables clients to request
 - **Query**: Fetches data from the server.
 - **Mutation**: Modifies data on the server.
 
-### 4. GraphQL Playground
+### 4. GraphQL Playground and Run the Query
 
-- An interactive tool for testing and debugging GraphQL APIs.
+- `npm install`
+- `npm start`
+- `Request Raised through Postman in Below`
+  ```json
+  {
+    "query": "{user(id: \"23\"){id, name, avatar, company(id: \"42\"){id, title, description,user(id: \"46\"){id, name}}}}"
+  }
+  ```
 
-### 5. Packages are used so Far
-
-- I used the `@apollo/server`, `graphql`
-- where `apollo/server` basically used to run the server
+**Note: Circular Mean from Type 1 --> Type 2 and Type 2 --> Type 1**
