@@ -4,26 +4,50 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLError,
+  GraphQLList,
 } from "graphql";
 
 const axios = require("axios");
 
-const RootVariousType = new GraphQLObjectType({
+// circular GraphQl Flow
+const UserType = new GraphQLObjectType({
   name: "RootVariousTypies",
-  fields: {
+  fields: () => ({
     id: { type: GraphQLString },
     name: { type: GraphQLString },
     avatar: { type: GraphQLString },
-  },
+    company: {
+      type: new GraphQLList(CompanyVariousType),
+      args: { id: { type: GraphQLString } },
+      resolve: async (parentValue, args) => {
+        const myValue = await axios
+          .get(`https://dummyjson.com/products/${args.id}`)
+          .then((resp: any) => resp.data);
+
+        return [myValue];
+      },
+    },
+  }),
 });
 
-const CompanyVariousType = new GraphQLObjectType({
+// circular GraphQl Flow
+const CompanyVariousType: any = new GraphQLObjectType({
   name: "CompanyType",
-  fields: {
+  fields: () => ({
     id: { type: GraphQLString },
-    createdAt: { type: GraphQLString },
+    title: { type: GraphQLString },
+    description: { type: GraphQLString },
     avatar: { type: GraphQLString },
-  },
+    user: {
+      type: UserType,
+      args: { id: { type: GraphQLString } },
+      resolve: async (parentValue, args) => {
+        return await axios
+          .get(`https://dummyjson.com/products/${args.id}`)
+          .then((resp: any) => resp.data);
+      },
+    },
+  }),
 });
 
 const DummyData = new GraphQLObjectType({
@@ -43,7 +67,7 @@ const RootTypeData = new GraphQLObjectType({
   name: "RootType",
   fields: {
     user: {
-      type: RootVariousType,
+      type: UserType,
       args: { id: { type: GraphQLString } },
       async resolve(parentData, args) {
         const data = await axios
