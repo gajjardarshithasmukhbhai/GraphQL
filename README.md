@@ -29,3 +29,19 @@ GraphQL is a query language and runtime for APIs that enables clients to request
 
 - I used the `@apollo/server`, `graphql`
 - where `apollo/server` basically used to run the server
+
+### 6. How to call the API and some key notes:
+
+- we need to pass the `query`, either we need primary operation like mutation bcz it only Accept the Query in that,
+  we need to pass the actions in it.
+  **Note:** but that depends on the library to library
+
+### 7. How to Run the Application:
+
+- For Running the Application, we need to pass the payload like below:
+
+```JSON
+{
+  "query": "mutation { addUser(id: \"43\", firstName: \"Darshit\", lastName: \"Gajjar\") { id, firstName } }"
+}
+```

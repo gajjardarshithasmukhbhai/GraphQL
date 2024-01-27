@@ -1,43 +1,13 @@
-import bodyParser from 'body-parser';
-import express from 'express';
-const {ApolloServer} = require('@apollo/server');
-const {expressMiddleware} = require('@apollo/server/express4');
+import express from "express"; // yarn add express
+import { createHandler } from "graphql-http/lib/use/express";
+const schema = require("./previous-step");
 
-const cors = require('cors');
+// Create a express instance serving all methods on `/graphql`
+// where the GraphQL over HTTP express request handler is
+const app = express();
+app.post("/graphql", createHandler({ schema }));
 
-async function startServer() {
-    const app = express();
-    
-    app.use(bodyParser.json());
-    const server = new ApolloServer({
-        typeDefs: `
-        type Todo {
-            id: ID!,
-            title: String!,
-            subject: String
-        }
-        
-        type Query {
-            getTodos: [Todo]
-        }
-        `,
-        resolvers: {
-            Query: {
-                getTodos: () => [{id: 1, title: "Darshit Gajjar", subject: "test"}]
-            }
-        }
-    });
-
-    app.use(cors());
-
-    await server.start();
-
-    app.use("/graphql", expressMiddleware(server));
-
-    const PORT  = process.env.PORT || 3500;
-    
-    app.listen(PORT, () => {
-        console.log("Hi, I am Ready to start my server, cool!");
-    });
-}
-startServer();
+const PORT = process.env.port || 4300;
+app.listen(PORT, () => {
+  console.log(`server ${PORT} is started`);
+});
