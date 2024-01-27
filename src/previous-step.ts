@@ -3,78 +3,55 @@ import {
   GraphQLObjectType,
   GraphQLString,
   GraphQLInt,
-  GraphQLError,
+  GraphQLNonNull,
 } from "graphql";
 
 const axios = require("axios");
 
-const RootVariousType = new GraphQLObjectType({
-  name: "RootVariousTypies",
+const myUser = new GraphQLObjectType({
+  name: "MyUser",
   fields: {
-    id: { type: GraphQLString },
-    name: { type: GraphQLString },
-    avatar: { type: GraphQLString },
+    id: { type: new GraphQLNonNull(GraphQLString) },
+    firstName: { type: new GraphQLNonNull(GraphQLString) },
+    lastName: { type: GraphQLString },
   },
 });
 
-const CompanyVariousType = new GraphQLObjectType({
-  name: "CompanyType",
+const mutation = new GraphQLObjectType({
+  name: "Mutation",
   fields: {
-    id: { type: GraphQLString },
-    createdAt: { type: GraphQLString },
-    avatar: { type: GraphQLString },
-  },
-});
-
-const DummyData = new GraphQLObjectType({
-  name: "DummyData",
-  fields: {
-    title: { type: GraphQLString },
-    description: { type: GraphQLString },
-    price: { type: GraphQLString },
-    discountPercentage: { type: GraphQLString },
-    rating: { type: GraphQLString },
-    stock: { type: GraphQLString },
-    brand: { type: GraphQLString },
-  },
-});
-
-const RootTypeData = new GraphQLObjectType({
-  name: "RootType",
-  fields: {
-    user: {
-      type: RootVariousType,
-      args: { id: { type: GraphQLString } },
-      async resolve(parentData, args) {
-        const data = await axios
-          .get("https://65992631a20d3dc41cef4e6b.mockapi.io/darshit/test")
-          .then((resp: any) => resp.data);
-        const testObj = data.find((value: any) => value.id === args.id);
-        return testObj;
+    addUser: {
+      type: myUser,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLString) },
+        firstName: { type: new GraphQLNonNull(GraphQLString) },
+        lastName: { type: GraphQLString },
       },
-    },
-    company: {
-      type: CompanyVariousType,
-      args: { myId: { type: GraphQLString } },
-      resolve: async (parentValue, args) => {
-        const data = await axios
-          .get("https://65992631a20d3dc41cef4e6b.mockapi.io/darshit/test")
-          .then((resp: any) => resp.data);
-        const testObj = data.find((value: any) => value.id === args.myId);
-        return testObj;
-      },
-    },
-    product: {
-      type: DummyData,
-      args: { id: { type: GraphQLString } },
-      resolve: async (parentValue, args) => {
-        return await axios
-          .get(`https://dummyjson.com/products/${args.id}`)
-          .then((resp: any) => resp.data);
+      resolve: async (parentValue, { id, firstName, lastName }) => {
+        // Here, you can perform the logic to add the user to your database or any other data source
+        // For demonstration purposes, let's assume you're using Axios to make a request
+        return { firstName, lastName, id };
       },
     },
   },
 });
 
-const schema = new GraphQLSchema({ query: RootTypeData });
+// Adding a basic Query type
+// TODO: we need to add the query to avoid conflict like {missing the query} kind of.
+// But library to library it depends. so it change while library change
+const query = new GraphQLObjectType({
+  name: "Query",
+  fields: {
+    dummyQuery: {
+      type: GraphQLString,
+      resolve: () => "Hello from the dummy query!",
+    },
+  },
+});
+
+const schema = new GraphQLSchema({
+  query, // Add the Query type to the schema
+  mutation,
+});
+
 module.exports = schema;
